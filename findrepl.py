@@ -127,7 +127,7 @@ if config_filename != "": # if a config file is provided
         print(f"{config_filename} will be used for carrying out the operations.")
 
     # Loading all the settings from the config file and ensuring their validity
-    with open(config_filename, 'r') as config_file:
+    with open(config_filename, 'r', encoding=SETTINGS.ENCODING) as config_file:
         for line in config_file:
             line = line.strip("\n").split("=")
             if line[0] == "DELIMITER":
@@ -302,7 +302,7 @@ strings = [] # array will contain all string objects
 
 # storing all strings in the provided file as objects:
 try:
-    with open(SETTINGS.STRINGS_FILE_NAME, "r") as strings_file:
+    with open(SETTINGS.STRINGS_FILE_NAME, "r", encoding=SETTINGS.ENCODING) as strings_file:
         count = 1
         for line in strings_file:
             s = line.split(SETTINGS.DELIMITER)
@@ -367,7 +367,7 @@ if not files_to_use: # accounts for if no files will be affected
 else:
     print(f"{len(files_to_use)} files will be searched.")
     if SETTINGS.SAVE_FILES_THAT_WILL_BE_SCANNED_LOG:
-        files_that_will_be_tweaked_file = open('change-files.log', "w")
+        files_that_will_be_tweaked_file = open('change-files.log', "w", encoding=SETTINGS.ENCODING)
         for file in files_to_use:
             files_that_will_be_tweaked_file.write(file + "\n")
         files_that_will_be_tweaked_file.close()
@@ -381,7 +381,7 @@ total_changes = 0
 files_to_skip = []
 if files_to_use:
     if SETTINGS.HYPERTEXT_SUPPORT == False: # for plaintext/non-hypertext files
-        with open(SETTINGS.LOGS_FILE_NAME, 'a') as logs:
+        with open(SETTINGS.LOGS_FILE_NAME, 'a', encoding=SETTINGS.ENCODING) as logs:
             for file in files_to_use:
                 if not SETTINGS.PROCESS_FILES_IN_CURRENT_DIR:
                     file_name = f"{SETTINGS.FILES_CUSTOM_DIR}/{file}"
@@ -408,7 +408,7 @@ if files_to_use:
                         os.remove(new_file_name)
     else: # for hypertext files
         from bs4 import BeautifulSoup, Comment
-        with open(SETTINGS.LOGS_FILE_NAME, 'a') as logs: 
+        with open(SETTINGS.LOGS_FILE_NAME, 'a', encoding=SETTINGS.ENCODING) as logs: 
             for file in files_to_use:
                 if not SETTINGS.PROCESS_FILES_IN_CURRENT_DIR:
                     file_name = f"{SETTINGS.FILES_CUSTOM_DIR}/{file}"
@@ -463,7 +463,7 @@ if files_to_use:
                 new_file_name = f'{file_split[0]}{SETTINGS.NEW_FILE_NAMES_SUFFIX}.{file_split[1]}'
                 if os.path.exists(new_file_name):
                     with open(file_name, "w", encoding=SETTINGS.ENCODING) as original:
-                        with open(new_file_name, "r") as new:
+                        with open(new_file_name, "r", encoding=SETTINGS.ENCODING) as new:
                             for line in new:
                                 original.write(line)
                     os.remove(new_file_name)
