@@ -1,9 +1,9 @@
-# What the script needs to run:
+# What the script needs to run
 - main.py (the main script file)
 - a file containing the strings in the same directory as the script (default filename: regexp.dat)
 - a file containing settings in the same directory of the script (default filename: findrepl.cfg)
 
-# What to watch out for:
+# What to watch out for
 - The settings file must include all settings. The script has been coded without hard-coded default fallbacks to ensure the script functions in accordance to the user's needs. This is done to prevent the the user's potential negligence of including a setting, resulting in an undesired fallback.
 - No lines can contain "\n" in the settings file.
 - HTML Comments are ignored in hypertext files.
@@ -38,7 +38,7 @@ This would treat each line of the provided file as an individual line, which wou
 
 
 
-# SETTINGS FILE:
+# Settings File
 
 - DELIMITER=|||| Any delimiter to separate regex expressions to be searched and replaced
 
@@ -71,7 +71,7 @@ This would treat each line of the provided file as an individual line, which wou
 - SKIP_FILES_WITH_UNIDENTIFIED_TAGS=YES (this setting is only used when HYPERTEXT_SUPPORT is ON, and related to non-XML files. Its main use is to identify files with unidentified tags (such as "<? ... ?>"), and ignore these files so their tags are preserved.)
 
 
-## Example Settings File Configuration:
+## Example Settings File Configuration
 
 DELIMITER=||||
 
@@ -103,14 +103,14 @@ BANNED_FILE_NAMES=readme.txt,regexp.dat,change-text.log
 
 SKIP_FILES_WITH_UNIDENTIFIED_TAGS=YES
 
-# Strings file
+# Strings File
 
 The strings file should contain:
 1. regex expressions to search for in the files
 2. A delimiter (this is determined in the settings file)
 3. What to replace the matching regex expressions with
 
-## Example Strings File Configuration:
+## Example Strings File Configuration
 
 Hello||||Hi
 
@@ -120,5 +120,4 @@ Hello||||Hi
 
 # Reported Issues
 
-- Some spaces (\s) seem to be wiped during find and replace for certain occasions.
 - Some special characters cannot be encoded properly in the logs file.
