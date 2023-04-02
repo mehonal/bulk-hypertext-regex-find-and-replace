@@ -306,7 +306,7 @@ try:
         count = 1
         for line in strings_file:
             s = line.split(SETTINGS.DELIMITER)
-            strings.append(ReplacementStr(s[0].strip("\n").strip(),s[1].strip("\n").strip()))
+            strings.append(ReplacementStr(s[0].strip("\n"),s[1].strip("\n")))
             count += 1
 except IndexError:
     raise LineMissingDelimeterException(count)
@@ -397,9 +397,9 @@ if files_to_use:
                             for string in strings:
                                 if re.search(string.find, i):
                                     changed_tags = True # used later to not delete _new file since changes were actually made.
-                                    old = str(i).strip("\n").strip()
+                                    old = str(i).strip("\n")
                                     i = re.sub(string.find, string.replace, i)
-                                    new_log = i.strip().strip("\n")
+                                    new_log = i.strip("\n")
                                     info = f'{file} CHANGE ({datetime.now()}): \"{old}\" --------> \"{new_log}\"\n'
                                     logs.write(info)
                                     total_changes += 1
@@ -435,10 +435,10 @@ if files_to_use:
                                     logs.write(info)
                                     break # breaks out of inner loop (for tag in tags_with_changes)
                             if (tag.parent.name not in SETTINGS.BANNED_TAGS) and (not isinstance(tag, Comment)):
-                                old = str(tag.text).strip("\n").strip()
+                                old = str(tag.text).strip("\n")
                                 new_tag = re.sub(string.find,string.replace,tag)
                                 tag.replace_with(new_tag)
-                                new_log = new_tag.strip().strip("\n")
+                                new_log = new_tag.strip("\n")
                                 info = f'{file} CHANGE ({datetime.now()}): \"{old}\" --------> \"{new_log}\"\n'
                                 logs.write(info)
                                 total_changes += 1
