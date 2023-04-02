@@ -117,3 +117,8 @@ Hello||||Hi
 1234||||1,234
 
 [Bb]eautiful\s[Ss]oup||||BS4
+
+# Reported Issues
+
+- Some spaces (\s) seem to be wiped during find and replace for certain occasions.
+- Some special characters cannot be encoded properly in the logs file.
