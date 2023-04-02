@@ -127,7 +127,7 @@ if config_filename != "": # if a config file is provided
         print(f"{config_filename} will be used for carrying out the operations.")
 
     # Loading all the settings from the config file and ensuring their validity
-    with open(config_filename, 'r', encoding=SETTINGS.ENCODING) as config_file:
+    with open(config_filename, 'r') as config_file:
         for line in config_file:
             line = line.strip("\n").split("=")
             if line[0] == "DELIMITER":
