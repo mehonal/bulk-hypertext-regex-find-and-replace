@@ -1,3 +1,7 @@
+Status: mostly working, but heavily needs testing under various circumstances.
+
+> Important Note: The latest commit has not been tested thoroughly.
+
 # What the script needs to run
 - main.py (the main script file)
 - a file containing the strings in the same directory as the script (default filename: regexp.dat)

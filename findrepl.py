@@ -83,7 +83,15 @@ print("""
         ----------------------------------------------------
         """)
 
-if os.path.exists('findrepl.cfg'): # check if findrepl.cfg is in the script's directory
+
+if __file__ != "__main__":
+    SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__)) + "/"
+else:
+    SCRIPT_DIR = os.getcwd()
+
+print(f"Script is currently located at: {SCRIPT_DIR}. This will be taken as the working directory if no custom directory is specified otherwise.\n")
+
+if os.path.exists(SCRIPT_DIR + 'findrepl.cfg'): # check if findrepl.cfg is in the script's directory
     print("Config file \"findrepl.cfg\" has been found in the script directory.")
     config_filename = "findrepl.cfg"
 else: # findrepl.cfg not found in script directory
@@ -123,11 +131,11 @@ if config_filename != "": # if a config file is provided
     SETTINGS.SKIP_FILES_WITH_UNIDENTIFIED_TAGS: bool = None
 
 
-    if os.path.exists(config_filename):
+    if os.path.exists(SCRIPT_DIR + config_filename):
         print(f"{config_filename} will be used for carrying out the operations.")
 
     # Loading all the settings from the config file and ensuring their validity
-    with open(config_filename, 'r') as config_file:
+    with open(SCRIPT_DIR + config_filename, 'r') as config_file:
         for line in config_file:
             line = line.strip("\n").split("=")
             if line[0] == "DELIMITER":
@@ -302,7 +310,7 @@ strings = [] # array will contain all string objects
 
 # storing all strings in the provided file as objects:
 try:
-    with open(SETTINGS.STRINGS_FILE_NAME, "r", encoding=SETTINGS.ENCODING) as strings_file:
+    with open(SCRIPT_DIR + SETTINGS.STRINGS_FILE_NAME, "r", encoding=SETTINGS.ENCODING) as strings_file:
         count = 1
         for line in strings_file:
             s = line.split(SETTINGS.DELIMITER)
@@ -350,7 +358,7 @@ extensions = tuple(SETTINGS.EXTENSIONS)
 files_to_use = [] # array containing the filenames of the files to run the script with    
 
 if SETTINGS.PROCESS_FILES_IN_CURRENT_DIR:
-    for file in os.listdir():
+    for file in os.listdir(SCRIPT_DIR):
         if file.endswith(extensions):
             if file not in SETTINGS.BANNED_FILE_NAMES and file != SETTINGS.STRINGS_FILE_NAME and file != SETTINGS.LOGS_FILE_NAME and file != config_filename:
                 files_to_use.append(file)
@@ -381,12 +389,12 @@ total_changes = 0
 files_to_skip = []
 if files_to_use:
     if SETTINGS.HYPERTEXT_SUPPORT == False: # for plaintext/non-hypertext files
-        with open(SETTINGS.LOGS_FILE_NAME, 'a', encoding=SETTINGS.ENCODING) as logs:
+        with open(SCRIPT_DIR + SETTINGS.LOGS_FILE_NAME, 'a', encoding=SETTINGS.ENCODING) as logs:
             for file in files_to_use:
                 if not SETTINGS.PROCESS_FILES_IN_CURRENT_DIR:
                     file_name = f"{SETTINGS.FILES_CUSTOM_DIR}/{file}"
                 else:
-                    file_name = file
+                    file_name = SCRIPT_DIR + file
                 with open(file_name, "r", encoding=SETTINGS.ENCODING) as original:
                     file_split = file_name.split(".")
                     new_file_name = f'{file_split[0]}{SETTINGS.NEW_FILE_NAMES_SUFFIX}.{file_split[1]}'
@@ -408,12 +416,12 @@ if files_to_use:
                         os.remove(new_file_name)
     else: # for hypertext files
         from bs4 import BeautifulSoup, Comment
-        with open(SETTINGS.LOGS_FILE_NAME, 'a', encoding=SETTINGS.ENCODING) as logs: 
+        with open(SCRIPT_DIR + SETTINGS.LOGS_FILE_NAME, 'a', encoding=SETTINGS.ENCODING) as logs: 
             for file in files_to_use:
                 if not SETTINGS.PROCESS_FILES_IN_CURRENT_DIR:
                     file_name = f"{SETTINGS.FILES_CUSTOM_DIR}/{file}"
                 else:
-                    file_name = file
+                    file_name = SCRIPT_DIR + file
                 with open(file_name, "r", encoding=SETTINGS.ENCODING) as original:
                     changed_tags = False
                     has_unidentified_tags = False
@@ -426,6 +434,7 @@ if files_to_use:
                         tags_with_changes = soup.find_all(string=re.compile(string.find))
                         for tag in tags_with_changes:
                             if SETTINGS.SKIP_FILES_WITH_UNIDENTIFIED_TAGS:
+                                print(tag.name)
                                 if tag.name == None and file_split[1] != 'xml':
                                     has_unidentified_tags = True
                                     changed_tags = False
@@ -433,7 +442,7 @@ if files_to_use:
                                     info = f"{file} SKIPPED ({datetime.now()}): The file contains an unidentified tag (such as '<? ... ?>'), and has been skipped due to this reason"
                                     print(info) # this is being printed to CLI as well since it is important for the user to know and likely rare for most use cases.
                                     logs.write(info)
-                                    break # breaks out of inner loop (for tag in tags_with_changes)
+                                    # break # breaks out of inner loop (for tag in tags_with_changes)
                             if (tag.parent.name not in SETTINGS.BANNED_TAGS) and (not isinstance(tag, Comment)):
                                 old = str(tag.text).strip("\n")
                                 new_tag = re.sub(string.find,string.replace,tag)
@@ -444,7 +453,7 @@ if files_to_use:
                                 total_changes += 1
                                 changed_tags = True
                         if has_unidentified_tags:
-                            break # breaks out of outer loop (for string in strings)
+                            pass # break # breaks out of outer loop (for string in strings)
                     if changed_tags and not has_unidentified_tags:
                         new_file_name = f'{file_split[0]}{SETTINGS.NEW_FILE_NAMES_SUFFIX}.{file_split[1]}'
                         with open(new_file_name, "w", encoding=SETTINGS.ENCODING) as new:
@@ -458,7 +467,7 @@ if files_to_use:
                 if not SETTINGS.PROCESS_FILES_IN_CURRENT_DIR:
                     file_name = f"{SETTINGS.FILES_CUSTOM_DIR}/{file}"
                 else:
-                    file_name = file
+                    file_name = SCRIPT_DIR + file
                 file_split = file_name.split(".")
                 new_file_name = f'{file_split[0]}{SETTINGS.NEW_FILE_NAMES_SUFFIX}.{file_split[1]}'
                 if os.path.exists(new_file_name):
